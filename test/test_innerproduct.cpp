@@ -141,11 +141,14 @@ void test3DGaussHermite()
     HaWpParamSet<D> param_set;
     std::cout << param_set << std::endl;
     std::vector<complex_t> coeffs(std::pow(N, D), 1.0);
+    for(int i = 0; i < coeffs.size(); ++i) coeffs[i] = i+1;
     ScalarHaWp<D, MultiIndex> packet;
     packet.eps() = eps;
     packet.parameters() = param_set;
     packet.shape() = std::make_shared<ShapeEnum<D,MultiIndex>>(shape_enum);
     packet.coefficients() = coeffs;
+    std::cout << "Coefficients:\n";
+    for(int i = 0; i < coeffs.size(); ++i) std::cout << coeffs[i] << "\n";
 
     //const dim_t order = 4;
     //using QR = GaussHermiteQR<order>;
@@ -224,8 +227,8 @@ int main()
 {
     //test1DGaussHermite();
     //test1DGaussHermiteOperator();
-    //test3DGaussHermite();
-    test1DInhomog();
+    test3DGaussHermite();
+    //test1DInhomog();
 
     return 0;
 }
