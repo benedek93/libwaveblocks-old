@@ -68,9 +68,11 @@ public:
         const CMatrix1N cweights = complex_t(1, 0) * weights;
 
         // Compute affine transformation.
+        // TODO: fewer inverses necessary (see original code update)
         auto Qs = (Q * Q.adjoint()).inverse().sqrt().inverse();
 
         // Transform nodes.
+        // TODO: Real matrix
         CMatrixDN transformed_nodes =
             q.replicate(1, n_nodes) + packet.eps() * (Qs * cnodes);
 
