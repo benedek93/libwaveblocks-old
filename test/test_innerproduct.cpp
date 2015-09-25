@@ -78,7 +78,7 @@ void test1DGaussHermiteOperator()
     using MultiIndex = TinyMultiIndex<unsigned short, D>;
     using QR = GaussHermiteQR<order>;
     using CMatrix1N = CMatrix<1, Eigen::Dynamic>;
-    using CMatrixD1 = CMatrix<D, 1>;
+    using RMatrixD1 = RMatrix<D, 1>;
     using CMatrixDN = CMatrix<D, Eigen::Dynamic>;
 
     // Set up sample 1D wavepacket.
@@ -108,7 +108,7 @@ void test1DGaussHermiteOperator()
     // Use an operator that returns a sequence 1, 2, ..., number_nodes.
     HomogeneousInnerProduct<D, MultiIndex, QR> ip;
     auto op =
-        [] (CMatrixDN nodes, CMatrixD1 pos) -> CMatrix1N
+        [] (CMatrixDN nodes, RMatrixD1 pos) -> CMatrix1N
     {
         const dim_t n_nodes = nodes.cols();
         CMatrix1N result(1, n_nodes);
