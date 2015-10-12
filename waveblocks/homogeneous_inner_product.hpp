@@ -33,9 +33,10 @@ public:
     using CMatrixD1 = CMatrix<D, 1>;
     using CMatrixDD = CMatrix<D, D>;
     using CMatrixDN = CMatrix<D, Eigen::Dynamic>;
+    using RMatrixD1 = RMatrix<D, 1>;
     using NodeMatrix = typename QR::NodeMatrix;
     using WeightVector = typename QR::WeightVector;
-    using op_t = std::function<CMatrix1N(CMatrixDN,CMatrixD1)>;
+    using op_t = std::function<CMatrix1N(CMatrixDN,RMatrixD1)>;
 
     HomogeneousInnerProduct()
     {
@@ -68,14 +69,16 @@ public:
         const CMatrix1N cweights = complex_t(1, 0) * weights;
 
         // Compute affine transformation.
+        // TODO: fewer inverses necessary (see original code update)
         auto Qs = (Q * Q.adjoint()).inverse().sqrt().inverse();
 
         // Transform nodes.
+        // TODO: Real matrix
         CMatrixDN transformed_nodes =
             q.replicate(1, n_nodes) + packet.eps() * (Qs * cnodes);
 
         // Apply operator.
-        CMatrix1N values = op(transformed_nodes, q);
+        CMatrix1N values = op(transformed_nodes, packet.parameters().q);
 
         Eigen::Array<complex_t, 1, Eigen::Dynamic> factor =
             std::pow(packet.eps(), D) * cweights.array() * values.array();
@@ -125,7 +128,7 @@ public:
     }
 
 private:
-    static CMatrix1N default_op(const CMatrixDN& nodes, const CMatrixD1& pos)
+    static CMatrix1N default_op(const CMatrixDN& nodes, const RMatrixD1& pos)
     {
         return CMatrix1N::Ones(1, nodes.cols());
     }
